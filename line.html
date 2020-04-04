@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/echarts.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="main" style="width: 900px; height: 600px;"></div>
+    <script>
+        // 图表实例化
+        // script 标签式引入
+        var myChart = echarts.init(document.getElementById('main'));
+        // 过渡————————————————————
+        // myChart.showLoading({
+        //     text:"正在努力的读取数据中……", // loading话术
+        // });
+        // ajax getting data…………
+
+        // ajax callback
+
+        // myChart.hideLoading();
+        // 图表使用 ------------------------
+        var option = {
+            title:{
+                text:"未来一周的气温",
+                subtext:'纯属虚构'
+            },
+            tooltip:{
+                trigger:'axis'          // 显示tooltip 可以换为 axis
+            },
+            legend:{                       // 图例配置
+                padding:5,                  // 图例内边距，单位px，默认上下左右内边距为5
+                itemGap:10,                 // Legend各个item之间的间隔，横向布局时为水平间隔，纵向布局时为纵向间隔
+                data:['最高','最低']
+            },
+            tooltip:{                       // 气泡提示配置
+                trigger:'axis',             // 触发类型，默认数据触发，可选为"axis"
+            },
+            toolbox:{               // 工具箱
+                show:true,
+                orient:'vertical',      // 布局方式，默认布局为horizontal 可选 vertical 竖向
+                left:'right',               // 位置
+                showtitle:false,             // 是否显示解释
+                feature:{
+                    mark:{
+                        show:true
+                    },
+                    dataZoom:{              // 区域缩放
+                        show:true
+                    },
+                    dataView:{             // 数据视图
+                        show:true,
+                        readOnly:true,
+                        optionToContent:function(opt){      // 自出编排数据视图的显示 使用函数将数据规划为表格
+                            console.log(opt);
+                            var axisData = opt.xAxis[0].data;
+                            var series = opt.series;
+                            var table = '<table style="width:100%;text-align:center"><tbody><tr>'
+                                + '<td>时间</td>'
+                                + '<td>' + series[0].name + '</td>'
+                                + '<td>' + series[1].name + '</td>'
+                                + '</tr>';
+                            for(var i = 0,l=axisData.length;i<l;i++){
+                                table += '<tr>'
+                                        +'<td>' + axisData[i] + '</td>'
+                                        +'<td>' + series[0].data[i] + '</td>'
+                                        +'<td>' + series[1].data[i] + '</td>'
+                                        +'</tr>';
+                            }
+                            table += '</tbody></table>';
+                            return table
+                        }
+                    },
+                    magicType:{
+                        show:true,          // 切换图形
+                        type:['line','bar']
+                    },
+                    restore:{               // 还原
+                        show:true
+                    },
+                    saveAsImage:{           // 保存图片
+                        show:true,
+                        type:'jpeg'         // 设置图片格式 默认png
+                    }
+                }
+            },
+            dataZoom:{                      // 数据区域缩放控件
+                show:true,                  // 是否显示数据区域缩放
+                realtime:true,              // 缩放变化是否实时显示
+                start:20,                   // 数据缩放，选择开始比例默认为0（%）
+                end:80                      // 数据缩放，选择结束比例默认为100（%）
+            },
+
+            xAxis:[
+                {                           // 直角坐标系的横轴数组
+                    type:'category',        // 坐标轴类型，横轴默认为类目轴，数值轴则参考yAxis说明
+                    boundaryGap:false,      // 坐标轴两端空白策略，数组内数值代表百分比
+                    data:function(){        // 使用函数调用
+                        var list = [];
+                        for(var i = 1;i<=30;i++){
+                            list.push('2020-03-'+i);
+                        }
+                        return list;
+                    }()
+                }
+            ],
+            yAxis:[                          // 直角坐标系中纵轴数组             
+                {   
+                    type:'value',            // 坐标轴类型，纵轴默认为数值轴，类目轴则参考xAxis说明
+                    boundaryGap:[0.1,0.1],   // 坐标轴两端空白策略，数组内数值代表百分比
+                    splitNumber:4            // 数值轴用，分割段数，默认为5
+                }
+            ],
+            series:[
+                {
+                    name:'最高',             // 系列名称
+                    type:'line',            // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+                    data:function(){
+                        var list = [];
+                        for(var i = 1;i<=30;i++){
+                            list.push(Math.round(Math.random()*30));
+                        }
+                        return list;
+                    }()
+                },
+                {
+                    name:'最低',
+                    type:'line',
+                    data:function(){
+                        var list = [];
+                        for(var i = 1;i<=30;i++){
+                            list.push(Math.round(Math.random()*30));
+                        }
+                        return list;
+                    }()
+                }
+            ]
+        };
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
